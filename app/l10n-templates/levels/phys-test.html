@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+
+    <meta name="size" value="780 585">
+    <meta name="background" value="white url(/content/bgs/intro-level.png) center center / cover">
+    <meta name="borders" value="all">
+    <meta name="player" value="-330 230">
+    <meta name="targets" value="200 228">
+    <meta name="editable" value="false">
+  </head>
+  <body>
+    <style>
+      .floor {
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        background: rgba(255, 255, 255, 0.8);
+        border-top: 1px solid white;
+      }
+      .rotated {
+        position: absolute;
+        top: 510px;
+        left: 200px;
+        width: 200px;
+        height: 100px;
+        transform: rotate(-30deg);
+        background: rgba(255, 255, 255, 0.8);
+        border-top: 1px solid white;
+      }
+    </style>
+
+    <div class="floor"></div>
+    <div class="rotated"></div>
+  </body>
+</html>
