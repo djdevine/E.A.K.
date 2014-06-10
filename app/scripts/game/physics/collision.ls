@@ -86,9 +86,7 @@ get-poly = (shape) ->
         c = point .minus shape.p
 
         # Apply rotation matrix, translate back to original position
-        end = shape.matrix.transform c .add shape.p
-        mark-level end
-        end
+        shape.matrix.transform c .add shape.p
 
     return poly
 
@@ -141,9 +139,6 @@ has-contact = (a, b) -->
 # 4. Calculate the new AABBs, and test those.
 # 5. If both AABBs were intersecting, the shapes intersect
 check-rotated-rect-contact = (a, b) ->
-  mark-level {x: 150, y: 200} 'magenta'
-  mark-level {x: 600, y: 200} 'magenta'
-
   if a.rotation isnt 0
     # step 1:
     local-trans = transform-to-local-space a
@@ -191,12 +186,7 @@ aabb-poly-intersect = (a-poly, b-poly) ->
     (maximum b-xs) < (minimum a-xs)
   )
 
-transform-to-local-space = (shape, point) -->
-  p = point.minus shape.p |> shape.imatrix.transform
-  t = if shape.data.player then new Vector 150, 200 else new Vector 600, 200
-  col = if shape.data.player then 'cyan' else 'lime'
-  mark-level (p.add t), col
-  p
+transform-to-local-space = (shape, point) --> point.minus shape.p |> shape.imatrix.transform
 
 # Get a list of potential contacts between one node and a list of nodes
 get-contacts = (node, nodes) -> filter (has-contact node), nodes

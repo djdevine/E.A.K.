@@ -1,21 +1,3 @@
-window.mark-level = ({x, y}, color = 'red') ->
-  $ '<div></div>'
-    ..css {
-      width: \10px
-      height: \10px
-      margin-top: '-5px'
-      margin-left: '-5px'
-      border-radius: \100%
-      border: "1px solid #color"
-      position: \absolute
-      left: "#{x}px"
-      top: "#{y}px"
-    }
-    ..add-class 'level-marker'
-    ..append-to $ '#levelcontainer .level'
-
-window.clear-marks = -> $ '.level-marker' .remove!
-
 require! {
   'game/physics/collision'
   'game/physics/events'

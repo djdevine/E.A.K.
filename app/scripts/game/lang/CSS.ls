@@ -39,6 +39,4 @@ module.exports = class CSS
     @clean.to-string {compress}
 
   to-string: (compress = false) ~>
-    str = @css.to-string {compress}
-    console.log 'css to string:' str
-    str
+    @css.to-string {compress}

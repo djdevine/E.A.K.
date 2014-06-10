@@ -43,7 +43,6 @@ is-contact-above = (shape-a, shape-b) --> true
   # shape-a.p.y >= shape-b.y
 
 find-state = (obj, nodes) ->
-  clear-marks!
   contacts = get-contacts obj, nodes
 
   obj.prev-contacts = obj.contacts
