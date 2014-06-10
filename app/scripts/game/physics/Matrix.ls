@@ -10,6 +10,12 @@ module.exports = class Matrix
     @from = new Vector a, c
     @to = new Vector b, d
 
+  invert: ~>
+    x = 1 / @determinant!
+    new Matrix x * @d, -x * @b, -x * @c, x * @a
+
+  determinant: ~> @a * @d - @b * @c
+
   # Transform a vector by this matrix:
   # ⎡a b⎤⎡x⎤ = ⎡x·a + y·b⎤
   # ⎣c d⎦⎣y⎦   ⎣x·c + y·d⎦

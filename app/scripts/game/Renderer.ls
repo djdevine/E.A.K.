@@ -66,7 +66,6 @@ module.exports = class Renderer extends Backbone.View
     chan = channels.parse 'contact: start: ENTITY_PLAYER, end: ENTITY_PLAYER'
     @subs[*] = chan.subscribe (contact) ->
       [player, other] = contact.find 'ENTITY_PLAYER'
-      console.log {other}
       if other.el?
         el = other.el
 

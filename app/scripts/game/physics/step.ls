@@ -37,12 +37,13 @@ update-el = (obj) ->
   obj._lt = t
   obj.el.style.transform = obj.el.style.moz-transform = obj.el.style.webkit-transform = t
 
-{get-aabb, find-bbox-intersects, get-contacts} = collision
+{get-aabb, get-contacts} = collision
 
 is-contact-above = (shape-a, shape-b) --> true
   # shape-a.p.y >= shape-b.y
 
 find-state = (obj, nodes) ->
+  clear-marks!
   contacts = get-contacts obj, nodes
 
   obj.prev-contacts = obj.contacts
@@ -110,6 +111,7 @@ module.exports = step = (state, t) ->
       last-fall-dist: obj.fall-dist
     }
 
+    if v.x isnt 0 or v.y isnt 0 then obj._poly-invalid = true
     obj.p.add-eq v
 
     obj.aabb = get-aabb obj

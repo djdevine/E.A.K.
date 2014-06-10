@@ -7,7 +7,7 @@
     <meta name="background" value="white url(/content/bgs/intro-level.png) center center / cover">
     <meta name="borders" value="all">
     <meta name="player" value="-330 230">
-    <meta name="targets" value="200 228">
+    <meta name="targets" value="">
     <meta name="editable" value="false">
   </head>
   <body>
@@ -29,7 +29,11 @@
         height: 100px;
         transform: rotate(-30deg);
         background: rgba(255, 255, 255, 0.8);
-        border-top: 1px solid white;
+        border: 1px solid white;
+      }
+
+      .floor:hover, .rotated:hover {
+        border-color: red;
       }
     </style>
 
