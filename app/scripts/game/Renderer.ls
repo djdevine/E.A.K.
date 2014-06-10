@@ -50,6 +50,7 @@ module.exports = class Renderer extends Backbone.View
     css = new CSS source
     css
       ..scope \# + @el.id
+      ..prefix!
       ..rewrite-hover '.' + Renderer::hover-class
       ..to-string!
 
@@ -65,8 +66,9 @@ module.exports = class Renderer extends Backbone.View
     chan = channels.parse 'contact: start: ENTITY_PLAYER, end: ENTITY_PLAYER'
     @subs[*] = chan.subscribe (contact) ->
       [player, other] = contact.find 'ENTITY_PLAYER'
-      if other.def?.el?
-        el = other.def.el
+      console.log {other}
+      if other.el?
+        el = other.el
 
         if contact.type is 'start'
           el.class-list.add Renderer::hover-class
