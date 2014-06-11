@@ -49,22 +49,42 @@ rect = (obj, contact) ->
       obj.state = 'on-thing'
 
 rotated-rect = (obj, contact) ->
-  # Find line to resolve for:
-  line = contact.poly
-    |> poly-lines
-    |> sort-by (-> line-distance obj.p, it)
-    |> first
+  get-line-and-point = (a, b) ->
+    # attempt to find the line to resolve for
+    lines = b.poly |> poly-lines
+    l1 = lines |> sort-by (-> line-distance a.p, it) |> first
 
-  # Find the point furthest from that line
-  point = obj.poly
-    |> filter (-> it.in-poly contact.poly)
-    |> sort-by (-> line-distance it, line)
-    |> last
+    # Find the point furthest from that line
+    point = a.poly
+      |> filter (-> it.in-poly b.poly)
+      |> sort-by (-> line-distance it, l1)
+      |> last
+
+    unless point is undefined
+      # Confirm line to resolve for:
+      line = lines |> sort-by (-> line-distance point, it) |> first
+
+    [line, point]
+
+  [line, point] = get-line-and-point obj, contact
+  if point is undefined
+    [line, point] = get-line-and-point contact, obj
+
+    if point is undefined
+      console.log 'Both undefined'
+      return # TODO: Resolve this case
+    else
+      console.log 'One undefined'
 
   ([point] ++ line) .for-each (point) -> mark-level point
 
   # Find how far we need to move the obj:
+
   d = line-distance point, line
+  if obj.p.y < point.y
+    obj.state = 'on-thing'
+    obj.v.y = 0
+    d -= pad
 
   # And in which direction...
   vec = line.0 .minus line.1
@@ -72,8 +92,6 @@ rotated-rect = (obj, contact) ->
 
   obj._poly-invalid = true
   obj.p.minus-eq vec
-
-  if obj.p.y < contact.p.y then obj.state = 'on-thing'
 
 # Get the distance between a point and a line. A line is defined by two points, [a, b]
 line-distance = (p, [a, b]) ->
