@@ -37,6 +37,12 @@ module.exports = class Vector
 
   length: ~> Math.sqrt @x * @x + @y * @y
 
+  normalize: ~>
+    l = @length!
+    new Vector @x / l, @y / l
+
+  mult-n: (n) ~> new Vector @x * n, @y * n
+
   # Point in polygon by ray-casting.
   # See http://en.wikipedia.org/wiki/Point_in_polygon
   in-poly: (p) ~>

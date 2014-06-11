@@ -3,6 +3,7 @@ require! {
   'game/physics/collision'
   'game/physics/keys'
   'game/physics/Matrix'
+  'game/physics/resolve'
   'game/physics/Vector'
 }
 
@@ -14,8 +15,7 @@ const max-fall-speed = 10px,
   move-damp = 0.7px,
   move-damp-in-air = 0.01px
   jump-speed = 5.4px,
-  max-jump-frames = 10,
-  pad = 0.1
+  max-jump-frames = 10
 
 old-els = []
 trails = false
@@ -74,6 +74,7 @@ target = 1000 / 60 # Aim for 60fps
 ts = replicate 30 1
 
 module.exports = step = (state, t) ->
+  clear-marks!
   # Get the useful stuff out of the state:
   {nodes, dynamics} = state
 
@@ -121,66 +122,9 @@ module.exports = step = (state, t) ->
     contacts = obj.contacts
     for contact in contacts when contact.sensor is false
       switch
-      | contact.type is 'circle'
-        'none'
-
-      | contact.type is 'rect' and contact.rotation is 0
-        p = obj.aabb
-        c = contact.aabb
-
-        # Vertical collision
-        on-top-of-thing = false
-        if (p.bottom >= c.top and p.top <= c.bottom) then
-          if obj.p.y < contact.p.y
-            y-ofs = (c.top - obj.height / 2) - obj.p.y
-            on-top-of-thing = true
-          else
-            y-ofs = (c.bottom + obj.height / 2 + pad) - obj.p.y
-
-        # Horizontal collision
-        if (p.right >= c.left and p.left <= c.right) then
-          if obj.p.x < contact.p.x
-            x-ofs = (c.left - obj.width / 2 - pad) - obj.p.x
-          else
-            x-ofs = (c.right + obj.width / 2 + pad) - obj.p.x
-
-        if x-ofs? and y-ofs?
-          if (Math.abs x-ofs) > (Math.abs y-ofs)
-            obj.p.y += y-ofs
-            obj.v.y = 0
-
-            # Is the obj on top of the thing?
-            if on-top-of-thing
-              obj.state = 'on-thing'
-
-          else
-            obj.p.x += x-ofs
-            obj.v.x = 0
-
-        else if x-ofs?
-          obj.p.x += x-ofs
-          obj.v.x = 0
-        else if y-ofs?
-          obj.p.y += y-ofs
-          obj.v.y = 0
-
-          # Is the obj on top of the thing?
-          if on-top-of-thing
-            obj.state = 'on-thing'
-
-      | contact.type is 'rect' and contact.rotation isnt 0
-        collide = false
-        for point in obj.poly when point.in-poly contact.poly
-          collide := true
-          break
-
-        unless collide
-          for point in contact.poly when point.in-poly obj.poly
-            collide := true
-            break
-
-        if collide
-          obj.el.style.background = "rgb(#{255 * Math.random!}, #{255 * Math.random!}, #{255 * Math.random!})"
+      | contact.type is 'circle' => throw new Error 'Cannot resolve for circle!'
+      | contact.type is 'rect' and contact.rotation is 0 => resolve.rect obj, contact
+      | contact.type is 'rect' and contact.rotation isnt 0 => resolve.rotated-rect obj, contact
 
     if obj.v.y > 0
       obj.fall-dist = obj.p.y - obj.fall-start
