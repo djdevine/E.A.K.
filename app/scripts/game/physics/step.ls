@@ -122,9 +122,8 @@ module.exports = step = (state, t) ->
     contacts = obj.contacts
     for contact in contacts when contact.sensor is false
       switch
-      | contact.type is 'circle' => throw new Error 'Cannot resolve for circle!'
-      | contact.type is 'rect' and contact.rotation is 0 => resolve.rect obj, contact
-      | contact.type is 'rect' and contact.rotation isnt 0 => resolve.rotated-rect obj, contact
+      | contact.type is 'rect' => resolve.rect obj, contact
+      | otherwise => throw new Error "Cannot resolve for '#{contact.type}'"
 
     if obj.v.y > 0
       obj.fall-dist = obj.p.y - obj.fall-start
@@ -148,7 +147,6 @@ module.exports = step = (state, t) ->
 
     | otherwise =>
       throw new Error 'Unknown state'
-
 
     update-el obj
 

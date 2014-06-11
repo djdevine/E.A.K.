@@ -117,9 +117,6 @@ has-contact = (a, b) -->
   if a.type isnt \rect and b.type isnt \rect
     throw new Error "Cannot detect collision between '#{a.type}' and '#{b.type}'"
 
-  # non-rotated rectangles are easy
-  if a.rotation is 0 and b.rotation is 0 then return true
-
   # Rotated rectangles involve... MATHS! :D
   if a._poly-invalid
     a.poly = get-poly a
