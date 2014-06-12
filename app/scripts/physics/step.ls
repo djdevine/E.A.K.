@@ -1,10 +1,10 @@
 require! {
   'channels'
-  'game/physics/collision'
-  'game/physics/keys'
-  'game/physics/Matrix'
-  'game/physics/resolve'
-  'game/physics/Vector'
+  'physics/collision'
+  'physics/keys'
+  'physics/Matrix'
+  'physics/resolve'
+  'physics/Vector'
 }
 
 const max-fall-speed = 10px,
@@ -44,31 +44,8 @@ is-contact-above = (shape-a, shape-b) --> true
   # shape-a.p.y >= shape-b.y
 
 find-state = (obj, nodes) ->
-  contacts = get-contacts obj, nodes
-
-  obj.prev-contacts = obj.contacts
-  obj.contacts = contacts
-
-  contacts = contacts |> reject -> it.data?.ignore? or it.data?.sensor?
-
-  # Find contacts we appear to be on top of (naive)
-  above-contacts = contacts.filter -> is-contact-above obj
-
-  if above-contacts.length
-    contact = head above-contacts
-    obj.state = 'contact'
-    return {
-      type: 'contact'
-      thing: contact
-    }
-
-  if obj.jump-frames > 0
-    obj.state = 'jumping'
-    return type: 'jumping'
-
-  obj.state = 'falling'
-
-  {type: 'falling'}
+  | obj.jump-frames > 0 => 'jumping'
+  | otherwise => 'falling'
 
 target = 1000 / 60 # Aim for 60fps
 
@@ -110,21 +87,15 @@ module.exports = step = (state, t) ->
       last-v: new Vector obj.v
       last-state: obj.state
       last-fall-dist: obj.fall-dist
+      last-contacts: obj.contacts
     }
 
-    if v.x isnt 0 or v.y isnt 0 then obj._poly-invalid = true
+    if v.x isnt 0 or v.y isnt 0 then obj.geom-invalid = true
     obj.p.add-eq v
 
-    obj.aabb = get-aabb obj
-
-    state = find-state obj, nodes
-
-    # Handle general collisions:
-    contacts = obj.contacts
-    for contact in contacts when contact.sensor is false
-      switch
-      | contact.type is 'rect' => resolve.rect obj, contact
-      | otherwise => throw new Error "Cannot resolve for '#{contact.type}'"
+    # Detect and resolve collisions:
+    obj.contacts = resolve obj, nodes
+    obj.state = find-state obj
 
     if obj.v.y > 0
       obj.fall-dist = obj.p.y - obj.fall-start

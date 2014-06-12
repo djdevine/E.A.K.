@@ -1,4 +1,4 @@
-require! 'game/physics/Vector'
+require! 'physics/maths/Vector'
 
 # Basic 2D-matrix class.
 # Matrices are in the form:

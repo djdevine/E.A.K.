@@ -17,13 +17,13 @@ window.mark-level = ({x, y}, color = 'red') ->
 window.clear-marks = -> $ '.level-marker' .remove!
 
 require! {
-  'game/physics/collision'
-  'game/physics/events'
-  'game/physics/Matrix'
-  'game/physics/prepare'
-  'game/physics/resolve'
-  'game/physics/step'
-  'game/physics/Vector'
+  'physics/collision'
+  'physics/events'
+  'physics/Matrix'
+  'physics/prepare'
+  'physics/resolve'
+  'physics/step'
+  'physics/Vector'
 }
 
 /*

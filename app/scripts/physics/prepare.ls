@@ -1,7 +1,7 @@
 require! {
-  'game/physics/collision'
-  'game/physics/Matrix'
-  'game/physics/Vector'
+  'physics/collision'
+  'physics/Matrix'
+  'physics/Vector'
 }
 
 prepare-one = (shape) ->
@@ -42,10 +42,13 @@ prepare-one = (shape) ->
     # Player stuff:
     if shape.data?.player then shape.handle-input = true
 
-    # Find polygon:
-    shape.poly = collision.get-poly shape
-    shape._poly-invalid = false
-    shape.aabb = collision.get-aabb shape
+    # Geometry:
+    shape.find-geometry = ->
+      shape.aabb = collision get-aabb shape
+      shape.poly = collision.get-poly shape
+      shape.geom-invalid = false
+
+    shape.find-geometry!
 
   shape
 

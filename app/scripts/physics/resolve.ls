@@ -1,7 +1,21 @@
-require! 'game/physics/Vector'
+require! {
+  'physics/Vector'
+  'physics/collision'
+}
 
 const pad = 0.1
 const rad-to-degrees = 180 / Math.PI
+
+module.exports = resolve = (obj, nodes) ->
+  contacts = []
+  mtvs = []
+  for node in nodes
+    {has-contact, mtv} = collision.detect obj, node
+    if has-contact
+      contacts[*] = node
+      mtvs[*] = mtv
+
+  contacts
 
 rect = (obj, contact) ->
   get-line-and-point = (a, b) ->
@@ -19,12 +33,12 @@ rect = (obj, contact) ->
       # Confirm line to resolve for:
       line = lines |> sort-by (-> line-distance point, it) |> first
 
-    [line, point]
+    {line, point}
 
-  [line, point] = get-line-and-point obj, contact
+  {line, point} = get-line-and-point obj, contact
   m = 1
   if point is undefined
-    [line, point] = get-line-and-point contact, obj
+    {line, point} = get-line-and-point contact, obj
     m = -1
 
     if point is undefined
@@ -52,7 +66,7 @@ rect = (obj, contact) ->
   vec = line.0 .minus line.1
   vec = (new Vector vec.y, -vec.x) .normalize! .mult-n d
 
-  obj._poly-invalid = true
+  obj.geom-invalid = true
   obj.p.minus-eq vec
 
 # Get the distance between a point and a line. A line is defined by two points, [a, b]
@@ -72,4 +86,4 @@ poly-lines = (poly) ->
 
 line-angle = ([a, b]) -> b .minus a .angle!
 
-module.exports = {rect}
+# module.exports = {rect}

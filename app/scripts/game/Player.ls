@@ -1,7 +1,7 @@
 require! {
   'channels'
-  'game/physics/keys'
   'logger'
+  'physics/keys'
 }
 
 player-html = '''

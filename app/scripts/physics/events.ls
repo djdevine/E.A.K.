@@ -23,15 +23,15 @@ module.exports = events = (state, channel) ->
 
   for node in state.dynamics
     contacts = node.contacts or []
-    prev-contacts = node.prev-contacts or []
+    last-contacts = node.last-contacts or []
 
     # Queue events for added things
     for contact in contacts
-      unless contact in prev-contacts
+      unless contact in last-contacts
         queue '+', node, contact
 
     # queue events for removed things
-    for contact in prev-contacts
+    for contact in last-contacts
       unless contact in contacts
         queue '-', node, contact
 

@@ -6,13 +6,13 @@ require! {
   'game/editor/EditorView'
   'game/event-loop'
   'game/hints/HintController'
-  'game/physics'
   'game/Player'
   'game/Renderer'
   'game/Targets'
   'loader/ElementLoader'
   'loader/LoaderView'
   'logger'
+  'physics'
 }
 
 {map, reduce} = _
