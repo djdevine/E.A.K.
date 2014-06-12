@@ -12,32 +12,41 @@
   </head>
   <body>
     <style>
-      .floor {
-        width: 100%;
-        height: 40px;
+      .floor, .rotated, .other {
         position: absolute;
-        left: 0;
-        bottom: -1px;
-        background: rgba(255, 255, 255, 0.8);
-        border-top: 1px solid white;
-      }
-      .rotated {
-        position: absolute;
-        top: 295px;
-        left: 200px;
-        width: 400px;
-        height: 200px;
-        transform: rotate(5deg);
         background: rgba(255, 255, 255, 0.8);
         border: 1px solid white;
       }
 
-      .floor:hover, .rotated:hover {
+      .floor {
+        width: 100%;
+        height: 40px;
+        left: 0;
+        bottom: -1px;
+      }
+
+      .rotated {
+        top: 480px;
+        left: 200px;
+        width: 400px;
+        height: 200px;
+        transform: rotate(55deg);
+      }
+
+      .other {
+        width: 200px;
+        height: 50px;
+        top: 369px;
+        left: 335px;
+      }
+
+      .floor:hover, .rotated:hover, .other:hover {
         border-color: red;
       }
     </style>
 
     <div class="floor"></div>
     <div class="rotated"></div>
+    <!-- <div class="other"></div> -->
   </body>
 </html>

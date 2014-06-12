@@ -1,6 +1,7 @@
 require! 'game/physics/Vector'
 
 const pad = 0.1
+const rad-to-degrees = 180 / Math.PI
 
 rect = (obj, contact) ->
   get-line-and-point = (a, b) ->
@@ -21,8 +22,10 @@ rect = (obj, contact) ->
     [line, point]
 
   [line, point] = get-line-and-point obj, contact
+  m = 1
   if point is undefined
     [line, point] = get-line-and-point contact, obj
+    m = -1
 
     if point is undefined
       console.log 'Both undefined'
@@ -34,11 +37,16 @@ rect = (obj, contact) ->
 
   # Find how far we need to move the obj:
 
-  d = line-distance point, line
-  if obj.p.y < point.y
+  d = m * line-distance point, line
+  line-ang = rad-to-degrees * line-angle line
+  on-thing = obj.p.y < point.y and -50 < line-ang < 50
+
+  if on-thing
     obj.state = 'on-thing'
     obj.v.y = 0
     d -= pad
+    if obj.data?.player
+      obj.rotate-trans = line-ang
 
   # And in which direction...
   vec = line.0 .minus line.1
@@ -61,5 +69,7 @@ poly-lines = (poly) ->
     lines[*] = [point, poly[(i + 1) % l]]
 
   lines
+
+line-angle = ([a, b]) -> b .minus a .angle!
 
 module.exports = {rect}

@@ -43,6 +43,8 @@ module.exports = class Vector
 
   mult-n: (n) ~> new Vector @x * n, @y * n
 
+  angle: ~> Math.atan2 @y, @x
+
   # Point in polygon by ray-casting.
   # See http://en.wikipedia.org/wiki/Point_in_polygon
   in-poly: (p) ~>

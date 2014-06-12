@@ -24,6 +24,7 @@ update-el = (obj) ->
   if obj.data.player then channels.player-position.publish obj.p.{x, y}
 
   t = "translate3d(#{obj.p.x - obj.x}px, #{obj.p.y - obj.y}px, 0)"
+  if obj.rotate-trans then t += " rotate(#{obj.rotate-trans}deg)"
   if obj._lt is t then return
 
   if trails and obj.data.player
