@@ -11,8 +11,9 @@ class Background
     # Set up the worker
     @worker = new WebWorker name: 'Blur'
 
-  show: (background, callback) ~>
+  show: (background, overlay, callback) ~>
     @current-background = value: '', ready: false
+    @overlay = overlay
 
     # Parse out an image URL from the background property
     background = @parse-bg background
@@ -61,15 +62,19 @@ class Background
     bg .= replace /\'\"/g ''
 
   # Blur takes a canvas context, and a callback for when the blurring is done.
-  blur: (ctx, done) ->
+  blur: (ctx, done) ~>
     # Fetch data out from the canvas context
     data = ctx.get-image-data 0, 0, ctx.canvas.width, ctx.canvas.height
 
     # Send it to the blur worker
-    data <- @worker.send 'blur', data
+    data <~ @worker.send 'blur', data
 
     # Restore the blurred data when the worker is done with it
     ctx.put-image-data data, 0, 0
+
+    if @overlay?
+      ctx.fill-style = @overlay
+      ctx.fill-rect 0, 0, ctx.canvas.width, ctx.canvas.height
 
     done!
 

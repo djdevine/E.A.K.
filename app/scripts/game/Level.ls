@@ -46,6 +46,9 @@ module.exports = class Level extends Backbone.Model
     renderer.el.style.background = bg
     @conf.background = bg
 
+    # Background overlay color:
+    bg-overlay = if level.find 'meta[name=bg-overlay]' .attr \value then that else null
+
     # Set the level size
     if size = level.find 'meta[name=size]' .attr \value
       [w, h] = size / ' '
@@ -100,7 +103,7 @@ module.exports = class Level extends Backbone.Model
     event-loop.pause!
 
     # Apply the blurred background image:
-    <~ background.show bg
+    <~ background.show bg, bg-overlay
     channels.game-commands.publish command: \loaded
 
     # Load sprite sheet animations:
