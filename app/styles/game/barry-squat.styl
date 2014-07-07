@@ -1,0 +1,91 @@
+.barry-squat
+  position absolute
+  width 85px
+  height 96px
+  animation barry-squat-flight 6s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-body
+  entity '/content/common/barry-squat-body.png' 85px 96px
+  top 0
+  left 0
+  z-index 2
+  animation barry-squat-body 0.3s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-wing-right
+  entity '/content/common/barry-squat-wing-right.png' 85px 56px
+  top 25px
+  left 60px
+  z-index 1
+  transform-origin bottom left
+  animation barry-squat-wing-right 0.3s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-wing-left
+  entity '/content/common/barry-squat-wing-left.png' 85px 56px
+  top 25px
+  right 60px
+  z-index 1
+  transform-origin bottom right
+  animation barry-squat-wing-left 0.3s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-leg-right
+  entity '/content/common/barry-squat-leg-right.png' 6px 10.5px
+  top 90px
+  right 15px
+  transform-origin top
+  animation barry-squat-limb-wiggle 0.35s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-leg-left
+  entity '/content/common/barry-squat-leg-left.png' 6px 10.5px
+  top 90px
+  left 21px
+  transform-origin top
+  animation barry-squat-limb-wiggle 0.25s -0.3s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-arm-right
+  entity '/content/common/barry-squat-arm-right.png' 18px 11.5px
+  top 60px
+  right 2px
+  transform-origin left
+  animation barry-squat-limb-wiggle 0.27s -0.1s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+.barry-squat-arm-left
+  entity '/content/common/barry-squat-arm-left.png' 18.5px 10.5px
+  top 65px
+  left 3px
+  transform-origin right
+  animation barry-squat-limb-wiggle 0.33s -0.2s cubic-bezier(0.37,0.01,0.63,1) alternate infinite
+
+@keyframes barry-squat-flight
+  0%
+    transform translateX(150px) rotate(30deg) translateX(100px) rotate(-45deg)
+
+  100%
+    transform translateX(-100px) rotate(-30deg) translateX(-150px) rotate(45deg)
+
+@keyframes barry-squat-body
+  from
+    transform translateY(-5px)
+
+  to
+    transform translateY(5px)
+
+@keyframes barry-squat-wing-right
+  from
+    transform rotate(-15deg) scaleX(0.6)
+
+  to
+    transform rotate(15deg) scaleX(1.1)
+
+@keyframes barry-squat-wing-left
+  from
+    transform rotate(15deg) scaleX(0.6)
+
+  to
+    transform rotate(-15deg) scaleX(1.1)
+
+@keyframes barry-squat-limb-wiggle
+  from
+    transform rotate(-15deg)
+
+  to
+    transform rotate(15deg)
