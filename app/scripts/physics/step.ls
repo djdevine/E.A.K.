@@ -2,9 +2,8 @@ require! {
   'channels'
   'physics/collision'
   'physics/keys'
-  'physics/Matrix'
   'physics/resolve'
-  'physics/Vector'
+  'physics/maths/Vector'
 }
 
 const max-fall-speed = 10px,
@@ -44,6 +43,7 @@ is-contact-above = (shape-a, shape-b) --> true
   # shape-a.p.y >= shape-b.y
 
 find-state = (obj, nodes) ->
+  | obj.contacts.filter(-> obj.geom.above it).length > 0 => 'on-thing'
   | obj.jump-frames > 0 => 'jumping'
   | otherwise => 'falling'
 

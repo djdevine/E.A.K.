@@ -1,65 +1,61 @@
 require! {
   'physics/collision'
-  'physics/Matrix'
-  'physics/Vector'
+  'physics/maths/Matrix'
+  'physics/maths/Polygon'
+  'physics/maths/Vector'
 }
 
-prepare-one = (shape) ->
-  unless shape.prepared
-    shape.prepared = true
-    shape.prepare = -> prepare-one shape
-    shape.destroy = -> shape._destroyed = true
+prepare-one = (node) ->
+  unless node.prepared
+    node.prepared = true
+    node.prepare = -> prepare-one node
+    node.destroy = -> node._destroyed = true
 
     # Save ids:
     ids = ['*']
-    if shape.id then ids[*] = that
-    if shape.data?.id then ids[*] = that
+    if node.id then ids[*] = that
+    if node.data?.id then ids[*] = that
 
-    if shape.el?
-      if shape.el.id then ids[*] = '#' + that
+    if node.el?
+      if node.el.id then ids[*] = '#' + that
 
-      for class-name in shape.el.class-list => ids[*] = '.' + class-name
+      for class-name in node.el.class-list => ids[*] = '.' + class-name
 
-    shape.ids = ids
+    node.ids = ids
 
     # Initialize velocity, position, and jump-frames (used to control height of jump)
-    shape.v = shape.last-v = new Vector 0, 0
-    shape.p = new Vector shape.{x, y}
-    shape.fall-start = shape.y
-    shape.jump-frames = shape.fall-dist = 0
-    shape.jump-state = \ready
-
-    # Is this a sensor?
-    if shape.data?.sensor? then shape.sensor = true else shape.sensor = false
-
-    # pre-calculate basic trig stuff
-    unless shape.rotation? then shape.rotation = 0
-    shape.sin = sint = sin shape.rotation
-    shape.cos = cost = cos shape.rotation
-    shape.matrix = matrix = new Matrix cost, -sint, sint, cost
-    shape.imatrix = matrix.invert!
+    node.v = node.last-v = new Vector 0, 0
+    node.p = new Vector node.{x, y}
+    node.fall-start = node.y
+    node.jump-frames = node.fall-dist = 0
+    node.jump-state = \ready
 
     # Player stuff:
-    if shape.data?.player then shape.handle-input = true
+    if node.data?.player then node.handle-input = true
 
-    # Geometry:
-    shape.find-geometry = ->
-      shape.aabb = collision get-aabb shape
-      shape.poly = collision.get-poly shape
-      shape.geom-invalid = false
+    # Is this a sensor?
+    if node.data?.sensor? then node.sensor = true else node.sensor = false
 
-    shape.find-geometry!
+    # Transformations:
+    unless node.rotation? then node.rotation = 0
+    node.sin = sint = sin node.rotation
+    node.cos = cost = cos node.rotation
+    node.matrix = matrix = new Matrix cost, -sint, sint, cost
+    node.imatrix = matrix.invert!
 
-  shape
+    # Geometry
+    node.geom = geom-from-def node
+
+  node
 
 prepare = (nodes) ->
   # Map the nodes to their prepared versions.
   nodes = nodes |> map prepare-one
 
-  sort-points = (shape) ->
+  sort-points = (node) ->
     p = 0
-    if shape.data?.player? then p -= 10
-    if shape.data?.dynamic? then p += 1
+    if node.data?.player? then p -= 10
+    if node.data?.dynamic? then p += 1
     p
 
   nodes = nodes.sort (a, b) -> (sort-points a) - (sort-points b)
@@ -67,5 +63,9 @@ prepare = (nodes) ->
   dynamics = nodes |> filter -> it.data?.player? or it.data?.dynamic?
 
   {dynamics, nodes}
+
+geom-from-def = (node) ->
+  | node.type is 'rect' => new Polygon node
+  | otherwise => throw new Error "Unrecognized type #{node.type}"
 
 module.exports = prepare

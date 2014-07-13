@@ -10,8 +10,7 @@ module.exports = class Vector
   # Addition, subtraction:
   # ⎡a⎤ + ⎡c⎤ = ⎡a + c⎤
   # ⎣b⎦   ⎣d⎦   ⎣b + d⎦
-  add: (v) ~>
-    new Vector @x + v.x, @y + v.y
+  add: (v) ~> new Vector @x + v.x, @y + v.y
 
   # [operation]-eq is the equivalent of += in or -= etc. in JS. They modify the Vector instead of returning a new one.
   add-eq: (v) ~>
@@ -19,8 +18,7 @@ module.exports = class Vector
     @y += v.y
     @
 
-  minus: (v) ~>
-    new Vector @x - v.x, @y - v.y
+  minus: (v) ~> new Vector @x - v.x, @y - v.y
 
   minus-eq: (v) ~>
     @x -= v.x
@@ -30,20 +28,21 @@ module.exports = class Vector
   # Distance squared & distance.
   # ⎢⎡a⎤ - ⎡c⎤⎥ = √[ (a - c)² + (b - d)² ]
   # ⎢⎣b⎦   ⎣d⎦⎥
-  dist-sq: (v) ~>
-    (v.x - @x) * (v.x - @x) + (v.y - @y) * (v.y - @y)
-
+  dist-sq: (v) ~> (v.x - @x) * (v.x - @x) + (v.y - @y) * (v.y - @y)
   dist: (v) ~> sqrt @dist-sq v
-
+  mult-n: (n) ~> new Vector @x * n, @y * n
+  dot: (b) ~> @x*b.x + @y*b.y
   length: ~> Math.sqrt @x * @x + @y * @y
+  angle: ~> Math.atan2 @y, @x
+  normal: ~> new Vector -@y, @x
+  abs: ~>
+    v = new Vector (Math.abs @x), (Math.abs @y)
+    v.edge = @edge
+    v
 
   normalize: ~>
     l = @length!
     new Vector @x / l, @y / l
-
-  mult-n: (n) ~> new Vector @x * n, @y * n
-
-  angle: ~> Math.atan2 @y, @x
 
   # Point in polygon by ray-casting.
   # See http://en.wikipedia.org/wiki/Point_in_polygon

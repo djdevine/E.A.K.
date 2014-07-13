@@ -19,11 +19,11 @@ window.clear-marks = -> $ '.level-marker' .remove!
 require! {
   'physics/collision'
   'physics/events'
-  'physics/Matrix'
   'physics/prepare'
   'physics/resolve'
   'physics/step'
-  'physics/Vector'
+  'physics/maths/Matrix'
+  'physics/maths/Vector'
 }
 
 /*

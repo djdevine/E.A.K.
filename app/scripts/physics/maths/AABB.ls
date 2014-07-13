@@ -31,7 +31,7 @@ module.exports = class AABB extends Geom
     @_shape = shape
     @_type = \aabb
     @aabb = this
-    update!
+    @update!
 
   update: ->
     shape = @_shape
@@ -72,3 +72,12 @@ module.exports = class AABB extends Geom
         }
 
       default => throw new Error "Cannot find AABB for '#type'"
+
+  intersects: (other) ~>
+    if other._type isnt \aabb then throw new Error 'Can only check intersect against another AABB!'
+    not (
+      other.left > this.right or
+      other.top > this.bottom or
+      other.bottom < this.top or
+      other.right < this.left
+    )
