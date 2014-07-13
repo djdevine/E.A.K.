@@ -16,6 +16,9 @@ channels.alert.subscribe ({msg, timeout = 5000ms}) ->
     ..text msg
     ..append-to $alert
 
+  # If the timeout is 0, the alert stays forever
+  if timeout is 0ms then return
+
   # Notifications are hidden after 5 seconds
   <- set-timeout _, timeout
   $alert.add-class \hidden

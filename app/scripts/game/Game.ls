@@ -30,11 +30,7 @@ module.exports = class Game extends Backbone.Model
   defaults: level: '/levels/index.html'
 
   start-level: (level-url) ~>
-    event <~ logger.start 'level', {level: level-url, parent: @logger-parent}
-    console.log {level-url}
-    l = prefix + level-url + "?#{Date.now!}"
-    logger.set-default-parent event.id
-    level-source <~ $.get l, _
+    {level-source, event} <~ @load-level level-url
     parsed = Slowparse.HTML document, level-source, [TreeInspectors.forbidJS]
 
     if parsed.error isnt null
@@ -51,6 +47,45 @@ module.exports = class Game extends Backbone.Model
     level = new Level $level
     level.event-id = event.id
     level.on 'done' -> event.stop!
+
+  load-level: (level-url, cb) ~>
+    l = prefix + level-url + "?#{Date.now!}"
+    $.ajax {
+      type: \GET
+      url: level-url
+      data-type: \html
+      success: (level-source) ~>
+        event <~ logger.start 'level', {level: level-url, parent: @logger-parent}
+        logger.set-default-parent event.id
+        cb {level-source, event}
+
+      error: (xhr, text-status, err) ~>
+        logger.log 'level-fail', {level: level-url, err: err, parent: @logger-parent}
+        if xhr.status is 404 then return @load404 cb
+        channels.alert.publish msg: "Couldn't load level: #{err}"
+    }
+
+  load404: (cb) ~>
+    if @four-oh-four-page?
+      event <~ logger.start 'level', {level: '404', parent: @logger-parent}
+      cb {event, level-source: @four-oh-four-page.replace 'LAST_LEVEL', @last-level}
+
+    else
+      $.ajax {
+        type: \GET
+        url: "#{prefix}/levels/404.html?#{Date.now!}"
+        data-type: \html
+        success: (level-source) ~>
+          @four-oh-four-page = level-source
+          @load404 cb
+
+        error: (xhr, text-status, err) ~>
+          logger.log 'fatal', {msg: 'Cannot load the 404 page!', err: err}
+          channels.alert.publish {
+            msg: 'We encountered an error whilst trying to load the error page. PANIC!?!?!'
+            timeout: 0ms
+          }
+      }
 
   start-cutscene: (name) ~>
     cs = new CutScene {name: "#prefix/cutscenes/#name"}
